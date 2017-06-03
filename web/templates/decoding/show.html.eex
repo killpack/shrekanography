@@ -1,7 +1,7 @@
 <h1>Decode an image</h1>
 <dl>
   <dt>Your message reads:</dt>
-  <dd>
+  <dd style="white-space: pre;">
     <%= @message.body %>
   </dd>
 </dl>
