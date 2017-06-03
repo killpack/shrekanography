@@ -27,31 +27,39 @@ defmodule Shrekanography.Message.Encoder do
     message_length = byte_size(message_body) # TODO max length 256!
 
     encoded_pixel = encode_pixel(first_pixel, message_length)
+
     encode_pixels(message_body,
                   [remaining_row_pixels | remaining_rows],
                   [encoded_pixel],
                   finished_rows)
   end
 
-  # Case: there aren't any pixels left to process in the current row
+  # Case: done encoding the current row
   defp encode_pixels(remaining_message,
                      _remaining_pixels = [[] | remaining_rows],
                      working_row,
                      finished_rows) do
-    # This row is done- let's add it to the pile of processed rows and move on to the next row
+    # Add the working row on to the pile of finished rows and start the next row
     encode_pixels(remaining_message, remaining_rows, [], [Enum.reverse(working_row) | finished_rows])
   end
 
-  # Case: no more characters in the message
-  defp encode_pixels(_remaining_message = <<>>,
+  # Case: no more characters in the message, but some pixels left on the current row
+  defp encode_pixels(remaining_message = <<>>,
                      _remaining_pixels = [remaining_row_pixels | remaining_rows],
                      working_row,
                      finished_rows) do
-    # Smush our placeholders together and return the encoded pixels
-    current_row = Enum.reverse(working_row) ++ remaining_row_pixels
-    encoded_rows = Enum.reverse([current_row | finished_rows])
+    # Add the rest of the pixels on to the front of the working row
+    current_row = Enum.reverse(remaining_row_pixels) ++ working_row
 
-    encoded_rows ++ remaining_rows
+    encode_pixels(remaining_message, [[] | remaining_rows], current_row, finished_rows)
+  end
+
+  # Case: no more characters in the message, no more pixels, no WIP- all done!
+  defp encode_pixels(_remaining_message = <<>>,
+                     _remaining_rows = [],
+                     _working_row = [],
+                     finished_rows) do
+    Enum.reverse(finished_rows)
   end
 
   # General case: encode a message character into a pixel
