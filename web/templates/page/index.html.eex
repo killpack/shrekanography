@@ -7,7 +7,10 @@
        <dt>Shrek</dt>
        <dd>green ogre, beloved of an entire generation</dd>
      </dl>
-     <%= link "Let's do it", to: encoding_path(@conn, :new), class: "btn btn-primary" %>
+     <p>
+       Shrekanography allows you to encode secret messages into pictures of Shrek.
+     </p>
+     <%= link "Let's do it", to: encoding_path(@conn, :new), class: "btn btn-primary btn-lg" %>
   </p>
 </div>
 

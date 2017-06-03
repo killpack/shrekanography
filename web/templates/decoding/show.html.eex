@@ -1,5 +1,6 @@
+<h1>Decode an image</h1>
 <dl>
-  <dt>Message</dt>
+  <dt>Your message reads:</dt>
   <dd>
     <%= @message.body %>
   </dd>

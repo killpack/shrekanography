@@ -1,3 +1,4 @@
+<h1>Encode a message</h1>
 <%= form_for @conn, encoding_path(@conn, :create), [as: :message], fn f -> %>
   <div class="form-group">
     <label>Message</label>
