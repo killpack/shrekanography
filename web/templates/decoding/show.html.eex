@@ -1,6 +1,6 @@
 <dl>
   <dt>Message</dt>
   <dd>
-    <%= @message %>
+    <%= @message.body %>
   </dd>
 </dl>

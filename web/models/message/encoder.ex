@@ -1,13 +1,14 @@
 defmodule Shrekanography.Message.Encoder do
   use Bitwise
 
-  def encode(message = %Shrekanography.Message{}, shrek_path \\ "priv/shreks/shrek1.png") do
+  def encode(message_body, file_path) do
     # Let's only support RGBa images for now
-    {:ok, png = %Imagineer.Image.PNG{color_format: :rgb_alpha}} = Imagineer.load(shrek_path)
+    {:ok, png = %Imagineer.Image.PNG{color_format: :rgb_alpha}} = Imagineer.load(file_path)
 
-    encoded_pixels = encode_pixels(message.body, png.pixels)
-    updated_png = %Imagineer.Image.PNG{png | pixels: encoded_pixels}
-    Imagineer.Image.PNG.to_binary(updated_png)
+    encoded_pixels = encode_pixels(message_body, png.pixels)
+
+    %Imagineer.Image.PNG{png | pixels: encoded_pixels}
+      |> Imagineer.Image.PNG.to_binary
   end
 
   def encode_pixels(message_body, png_pixels) do
@@ -17,16 +18,16 @@ defmodule Shrekanography.Message.Encoder do
   # TODO handle case when the message is longer than the number of pixels
 
   # Case: we haven't processed any message characters yet
-  defp encode_pixels(message,
+  defp encode_pixels(message_body,
                      _remaining_pixels = [[first_pixel | remaining_row_pixels] | remaining_rows],
                      _working_row = [],
                      finished_rows = []) do
 
     # encode the length of the message into the first pixel
-    message_length = byte_size(message) # TODO max length 256!
+    message_length = byte_size(message_body) # TODO max length 256!
 
     encoded_pixel = encode_pixel(first_pixel, message_length)
-    encode_pixels(message,
+    encode_pixels(message_body,
                   [remaining_row_pixels | remaining_rows],
                   [encoded_pixel],
                   finished_rows)
@@ -50,12 +51,11 @@ defmodule Shrekanography.Message.Encoder do
     current_row = Enum.reverse(working_row) ++ remaining_row_pixels
     encoded_rows = Enum.reverse([current_row | finished_rows])
 
-    current_row_length = length(current_row)
     encoded_rows ++ remaining_rows
   end
 
   # General case: encode a message character into a pixel
-  defp encode_pixels(_message = <<message_byte::integer, remaining_message::binary>>,
+  defp encode_pixels(_message_body = <<message_byte::integer, remaining_message::binary>>,
                      _remaining_pixels = [[pixel | remaining_row_pixels] | remaining_rows],
                      working_row,
                      finished_rows) do
