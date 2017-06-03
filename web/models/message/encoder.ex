@@ -34,11 +34,11 @@ defmodule Shrekanography.Message.Encoder do
 
   # Case: there aren't any pixels left to process in the current row
   defp encode_pixels(remaining_message,
-                     _remaining_pixels = [[] | [next_row | remaining_rows]],
+                     _remaining_pixels = [[] | remaining_rows],
                      working_row,
                      finished_rows) do
     # This row is done- let's add it to the pile of processed rows and move on to the next row
-    encode_pixels(remaining_message, next_row, [], [working_row | finished_rows])
+    encode_pixels(remaining_message, remaining_rows, [], [working_row | finished_rows])
   end
 
   # Case: no more characters in the message
@@ -48,9 +48,10 @@ defmodule Shrekanography.Message.Encoder do
                      finished_rows) do
     # Smush our placeholders together and return the encoded pixels
     current_row = Enum.reverse(working_row) ++ remaining_row_pixels
-    encoded_rows = Enum.reverse(finished_rows) ++ current_row
+    encoded_rows = Enum.reverse([current_row | finished_rows])
 
-    [encoded_rows] ++ remaining_rows
+    current_row_length = length(current_row)
+    encoded_rows ++ remaining_rows
   end
 
   # General case: encode a message character into a pixel

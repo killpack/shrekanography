@@ -12,7 +12,7 @@ defmodule Shrekanography.Message do
   def decode(shrek_path \\ "priv/shreks/secret_shrek.png") do
     {:ok, png} = Imagineer.load(shrek_path)
 
-    decoded_message = do_decode(png.pixels)
+    do_decode(png.pixels)
   end
 
   defp do_decode(pixels) do
