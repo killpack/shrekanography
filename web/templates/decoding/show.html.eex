@@ -1,3 +1,6 @@
-<p>
-  <%= @message %>
-</p>
+<dl>
+  <dt>Message</dt>
+  <dd>
+    <%= @message %>
+  </dd>
+</dl>
