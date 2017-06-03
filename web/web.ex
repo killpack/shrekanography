@@ -18,11 +18,6 @@ defmodule Shrekanography.Web do
 
   def model do
     quote do
-      use Ecto.Schema
-
-      import Ecto
-      import Ecto.Changeset
-      import Ecto.Query
     end
   end
 
@@ -31,8 +26,6 @@ defmodule Shrekanography.Web do
       use Phoenix.Controller
 
       alias Shrekanography.Repo
-      import Ecto
-      import Ecto.Query
 
       import Shrekanography.Router.Helpers
       import Shrekanography.Gettext

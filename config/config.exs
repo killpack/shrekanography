@@ -5,10 +5,6 @@
 # is restricted to this project.
 use Mix.Config
 
-# General application configuration
-config :shrekanography,
-  ecto_repos: [Shrekanography.Repo]
-
 # Configures the endpoint
 config :shrekanography, Shrekanography.Endpoint,
   url: [host: "localhost"],

@@ -8,8 +8,6 @@ defmodule Shrekanography do
 
     # Define workers and child supervisors to be supervised
     children = [
-      # Start the Ecto repository
-      supervisor(Shrekanography.Repo, []),
       # Start the endpoint when the application starts
       supervisor(Shrekanography.Endpoint, []),
       # Start your own worker by calling: Shrekanography.Worker.start_link(arg1, arg2, arg3)
