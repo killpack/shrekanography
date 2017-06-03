@@ -5,6 +5,8 @@ defmodule Shrekanography.EncodingController do
   @shrek_path "priv/shreks/shrek1.png"
   @output_filename "secret_shrek.png"
 
+  # TODO cache parsed PNG, since it'll never change
+
   def new(conn, _params) do
     render conn, "new.html"
   end
