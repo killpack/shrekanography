@@ -1,0 +1,10 @@
+<%= form_for @conn, decoding_path(@conn, :create), [as: :secret, multipart: true], fn f -> %>
+  <div class="form-group">
+    <label>Shrek</label>
+    <%= file_input f, :image, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= submit "Submit", class: "btn btn-primary" %>
+  </div>
+<% end %>

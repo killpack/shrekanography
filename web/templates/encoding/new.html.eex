@@ -1,0 +1,7 @@
+<%= form_for @conn, encoding_path(@conn, :create), [as: :message], fn f -> %>
+  <div class="form-group">
+    <label>Message</label>
+    <%= text_input f, :body, class: "form-control" %>
+  </div>
+  <%= submit "Shrek", class: "btn btn-primary" %>
+<% end %>

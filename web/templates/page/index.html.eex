@@ -7,7 +7,7 @@
        <dt>Shrek</dt>
        <dd>green ogre, beloved of an entire generation</dd>
      </dl>
-     <a class="btn btn-primary">Let's do it</a>
+     <%= link "Let's do it", to: encoding_path(@conn, :new), class: "btn btn-primary" %>
   </p>
 </div>
 
