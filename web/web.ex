@@ -25,8 +25,6 @@ defmodule Shrekanography.Web do
     quote do
       use Phoenix.Controller
 
-      alias Shrekanography.Repo
-
       import Shrekanography.Router.Helpers
       import Shrekanography.Gettext
     end
@@ -58,9 +56,6 @@ defmodule Shrekanography.Web do
     quote do
       use Phoenix.Channel
 
-      alias Shrekanography.Repo
-      import Ecto
-      import Ecto.Query
       import Shrekanography.Gettext
     end
   end
