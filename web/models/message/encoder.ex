@@ -23,9 +23,9 @@ defmodule Shrekanography.Message.Encoder do
                      finished_rows = []) do
 
     # encode the length of the message into the first pixel
-    message_length = byte_size(message)
-    encoded_pixel = encode_pixel(first_pixel, message_length)
+    message_length = byte_size(message) # TODO max length 256!
 
+    encoded_pixel = encode_pixel(first_pixel, message_length)
     encode_pixels(message,
                   [remaining_row_pixels | remaining_rows],
                   [encoded_pixel],
@@ -38,7 +38,7 @@ defmodule Shrekanography.Message.Encoder do
                      working_row,
                      finished_rows) do
     # This row is done- let's add it to the pile of processed rows and move on to the next row
-    encode_pixels(remaining_message, remaining_rows, [], [working_row | finished_rows])
+    encode_pixels(remaining_message, remaining_rows, [], [Enum.reverse(working_row) | finished_rows])
   end
 
   # Case: no more characters in the message
