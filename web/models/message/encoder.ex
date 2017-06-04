@@ -79,10 +79,10 @@ defmodule Shrekanography.Message.Encoder do
     # Stash message data in the two least significant bits of each channel.
 
     # Split up the message byte into four two-bit chunks:
-    red_bits   = message_byte >>> 6 |> rem(4) # most significant bits...
-    green_bits = message_byte >>> 4 |> rem(4)
-    blue_bits  = message_byte >>> 2 |> rem(4)
-    alpha_bits = message_byte       |> rem(4) # ... down to the least.
+    red_bits   = message_byte >>> 6 &&& 0b11 # two most significant bits...
+    green_bits = message_byte >>> 4 &&& 0b11
+    blue_bits  = message_byte >>> 2 &&& 0b11
+    alpha_bits = message_byte       &&& 0b11 # ... down to the least.
 
     # Then set the least significant bits of the pixel accordingly
     { set_least_significant_bits(elem(pixel, 0), red_bits),
