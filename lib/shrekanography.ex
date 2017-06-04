@@ -11,7 +11,7 @@ defmodule Shrekanography do
       # Start the endpoint when the application starts
       supervisor(Shrekanography.Endpoint, []),
       # Start your own worker by calling: Shrekanography.Worker.start_link(arg1, arg2, arg3)
-      # worker(Shrekanography.Worker, [arg1, arg2, arg3]),
+      worker(Shrekanography.PngServer, ["priv/shreks/shrek1.png"]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

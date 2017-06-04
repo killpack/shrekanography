@@ -1,9 +1,8 @@
 defmodule Shrekanography.Message.Encoder do
   use Bitwise
 
-  def encode(message_body, file_path) do
-    # Let's only support RGBa images for now
-    {:ok, png = %Imagineer.Image.PNG{color_format: :rgb_alpha}} = Imagineer.load(file_path)
+  def encode(message_body) do
+    png = Shrekanography.PngServer.fetch_png()
 
     encoded_pixels = encode_pixels(message_body, png.pixels)
 
