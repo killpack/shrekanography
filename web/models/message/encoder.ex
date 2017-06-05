@@ -2,7 +2,7 @@ defmodule Shrekanography.Message.Encoder do
   use Bitwise
 
   def encode(message_body) do
-    png = Shrekanography.PngServer.fetch_png()
+    png = Shrekanography.PngServer.fetch_random_png
 
     encoded_pixels = encode_pixels(message_body, png.pixels)
 

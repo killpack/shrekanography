@@ -1,0 +1,5 @@
+<h1>Encode a message</h1>
+
+<p class="text-muted">(Click on Shrek to save your message.)</p>
+
+<%= encoded_image(@png_binary) %>
