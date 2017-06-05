@@ -1,13 +1,13 @@
 defmodule Shrekanography.Message.Encoder do
   use Bitwise
 
-  def encode(message_body) do
-    png = Shrekanography.PngServer.fetch_random_png
+  def encode(message_body, shrek_filename) do
+    {shrek_filename, png} = Shrekanography.PngServer.fetch_png(shrek_filename)
 
     encoded_pixels = encode_pixels(message_body, png.pixels)
 
-    %Imagineer.Image.PNG{png | pixels: encoded_pixels}
-      |> Imagineer.Image.PNG.to_binary
+    png_binary = %Imagineer.Image.PNG{png | pixels: encoded_pixels} |> Imagineer.Image.PNG.to_binary
+    {shrek_filename, png_binary}
   end
 
   def encode_pixels(message_body, png_pixels) do
