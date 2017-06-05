@@ -2,8 +2,6 @@ defmodule Shrekanography.EncodingController do
   use Shrekanography.Web, :controller
   alias Shrekanography.Message
 
-  @output_filename "secret_shrek.png"
-
   def new(conn, _params) do
     render conn, "new.html"
   end

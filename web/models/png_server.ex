@@ -13,14 +13,6 @@ defmodule Shrekanography.PngServer do
     Agent.start_link(fn -> pngs end, name: __MODULE__)
   end
 
-  def fetch_png(shrek_filename) do
-    Agent.get(__MODULE__, fn pngs -> pngs[shrek_filename] end)
-  end
-
-  def list_pngs do
-    Agent.get(__MODULE__, fn pngs -> Map.keys(pngs) end)
-  end
-
   def fetch_random_png do
     Agent.get(__MODULE__, fn pngs ->
       random_key = Map.keys(pngs) |> Enum.random
