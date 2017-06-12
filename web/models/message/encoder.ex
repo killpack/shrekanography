@@ -14,6 +14,14 @@ defmodule Shrekanography.Message.Encoder do
     encode_pixels(message_body, png_pixels, [], [])
   end
 
+  # Case: no more characters in the message, no more pixels, no WIP- all done!
+  defp encode_pixels(_remaining_message = <<>>,
+                     _remaining_rows = [],
+                     _working_row = [],
+                     finished_rows) do
+    Enum.reverse(finished_rows)
+  end
+
   # Case: we haven't processed any message characters yet
   defp encode_pixels(message_body,
                      _remaining_pixels = [[first_pixel | remaining_row_pixels] | remaining_rows],
@@ -50,14 +58,6 @@ defmodule Shrekanography.Message.Encoder do
     current_row = Enum.reverse(remaining_row_pixels) ++ working_row
 
     encode_pixels(remaining_message, [[] | remaining_rows], current_row, finished_rows)
-  end
-
-  # Case: no more characters in the message, no more pixels, no WIP- all done!
-  defp encode_pixels(_remaining_message = <<>>,
-                     _remaining_rows = [],
-                     _working_row = [],
-                     finished_rows) do
-    Enum.reverse(finished_rows)
   end
 
   # General case: encode a message character into a pixel
