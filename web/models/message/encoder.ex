@@ -14,8 +14,6 @@ defmodule Shrekanography.Message.Encoder do
     encode_pixels(message_body, png_pixels, [], [])
   end
 
-  # TODO handle case when the message is longer than the number of pixels
-
   # Case: we haven't processed any message characters yet
   defp encode_pixels(message_body,
                      _remaining_pixels = [[first_pixel | remaining_row_pixels] | remaining_rows],
@@ -23,7 +21,8 @@ defmodule Shrekanography.Message.Encoder do
                      finished_rows = []) do
 
     # encode the length of the message into the first pixel
-    message_length = byte_size(message_body) # TODO max length 256!
+    # NOTE: length must fit in 1 unsigned byte, so the max message length is 255 bytes
+    message_length = byte_size(message_body)
 
     encoded_pixel = encode_pixel(first_pixel, message_length)
 
