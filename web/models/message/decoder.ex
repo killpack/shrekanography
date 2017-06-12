@@ -17,11 +17,11 @@ defmodule Shrekanography.Message.Decoder do
     :erlang.list_to_binary(chars)
   end
 
-  defp decode_pixel(pixel) do
-    red_bits   = elem(pixel, 0) &&& 0b11 # only take the two least significant bits
-    green_bits = elem(pixel, 1) &&& 0b11
-    blue_bits  = elem(pixel, 2) &&& 0b11
-    alpha_bits = elem(pixel, 3) &&& 0b11
+  defp decode_pixel({red, green, blue, alpha}) do
+    red_bits   = red   &&& 0b11 # only take the two least significant bits
+    green_bits = green &&& 0b11
+    blue_bits  = blue  &&& 0b11
+    alpha_bits = alpha &&& 0b11
     character =
       (red_bits   <<< 6) +
       (green_bits <<< 4) +
