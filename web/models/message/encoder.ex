@@ -12,34 +12,16 @@ defmodule Shrekanography.Message.Encoder do
 
   def encode_pixels(message_body, png_pixels) do
     # Stash the length of the message into the first pixel
-    message_length = byte_size(message_body) |> :binary.encode_unsigned(:big)
+    message_length = byte_size(message_body)
+    full_message = [message_length | :erlang.binary_to_list(message_body)]
 
-    encode_rows(message_length <> message_body, png_pixels, [])
-  end
+    row_length = length(hd(png_pixels))
 
-  defp encode_rows(_remaining_message,
-                   _remaining_rows = [],
-                   finished_rows) do
-    Enum.reverse(finished_rows)
-  end
+    {pixels_to_encode, leftover_pixels} = png_pixels |> List.flatten |> Enum.split(message_length + 1)
 
-  defp encode_rows(message,
-                   [current_row | remaining_rows],
-                   finished_rows) do
-    bytes_to_take = min(length(current_row), byte_size(message))
+    encoded_pixels = Enum.zip(pixels_to_encode, full_message) |> Enum.map(&encode_pixel/1)
 
-    <<current_message::binary-size(bytes_to_take), remaining_message::binary>> = message
-
-    encoded_row = encode_row(current_message, current_row)
-    encode_rows(remaining_message, remaining_rows, [encoded_row | finished_rows])
-  end
-
-  def encode_row(message, row) do
-    {pixels_to_encode, leftover_pixels} = Enum.split(row, byte_size(message))
-    message_as_list = :erlang.binary_to_list(message)
-
-    encoded_pixels = Enum.zip(pixels_to_encode, message_as_list) |> Enum.map(&encode_pixel/1)
-    encoded_pixels ++ leftover_pixels
+    (encoded_pixels ++ leftover_pixels) |> Enum.chunk(row_length)
   end
 
   defp encode_pixel({{red, green, blue, alpha}, message_byte}) do
