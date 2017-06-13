@@ -1,5 +1,4 @@
 defmodule Shrekanography.Message.Decoder do
-  use Bitwise
 
   def decode(file_path) do
     {:ok, png} = Imagineer.load(file_path)
@@ -18,16 +17,13 @@ defmodule Shrekanography.Message.Decoder do
   end
 
   defp decode_pixel({red, green, blue, alpha}) do
-    red_bits   = red   &&& 0b11 # only take the two least significant bits
-    green_bits = green &&& 0b11
-    blue_bits  = blue  &&& 0b11
-    alpha_bits = alpha &&& 0b11
-    character =
-      (red_bits   <<< 6) +
-      (green_bits <<< 4) +
-      (blue_bits  <<< 2) +
-      alpha_bits
-    character
+    <<_::size(6), red_bits::size(2)>>   = <<red>>
+    <<_::size(6), green_bits::size(2)>> = <<green>>
+    <<_::size(6), blue_bits::size(2)>>  = <<blue>>
+    <<_::size(6), alpha_bits::size(2)>> = <<alpha>>
+
+    character = <<red_bits::size(2), green_bits::size(2), blue_bits::size(2), alpha_bits::size(2)>>
+    character |> :binary.decode_unsigned(:big)
   end
 
 end

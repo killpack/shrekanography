@@ -1,5 +1,4 @@
 defmodule Shrekanography.Message.Encoder do
-  use Bitwise
 
   def encode(message_body, shrek_filename) do
     {shrek_filename, png} = Shrekanography.PngServer.fetch_png(shrek_filename)
@@ -28,21 +27,17 @@ defmodule Shrekanography.Message.Encoder do
     # Stash message data in the two least significant bits of each channel.
 
     # Split up the message byte into four two-bit chunks:
-    red_bits   = message_byte >>> 6 &&& 0b11 # two most significant bits...
-    green_bits = message_byte >>> 4 &&& 0b11
-    blue_bits  = message_byte >>> 2 &&& 0b11
-    alpha_bits = message_byte       &&& 0b11 # ... down to the least.
+    <<red_bits::size(2), green_bits::size(2), blue_bits::size(2), alpha_bits::size(2)>> = <<message_byte>>
 
     # Then set the least significant bits of the pixel accordingly
-    { set_least_significant_bits(red, red_bits),
-      set_least_significant_bits(green, green_bits),
-      set_least_significant_bits(blue, blue_bits),
-      set_least_significant_bits(alpha, alpha_bits) }
+    { set_last_two_bits(red, red_bits),
+      set_last_two_bits(green, green_bits),
+      set_last_two_bits(blue, blue_bits),
+      set_last_two_bits(alpha, alpha_bits) }
   end
 
-  defp set_least_significant_bits(byte, bits_to_set) do
-    byte
-      &&& 0b11111100 # Clear out the two least significant bits...
-      ||| bits_to_set # and replace them with the desired bits.
+  defp set_last_two_bits(byte, bits_to_set) do
+    <<first_six_bits::size(6), _last_two_bits::size(2)>> = <<byte>>
+    <<first_six_bits::size(6), bits_to_set::size(2)>> |> :binary.decode_unsigned(:big)
   end
 end
