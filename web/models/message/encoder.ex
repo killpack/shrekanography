@@ -17,7 +17,7 @@ defmodule Shrekanography.Message.Encoder do
     encode_rows(message_length <> message_body, png_pixels, [])
   end
 
-  defp encode_rows(_remaining_message = <<>>,
+  defp encode_rows(_remaining_message,
                    _remaining_rows = [],
                    finished_rows) do
     Enum.reverse(finished_rows)
