@@ -11,69 +11,38 @@ defmodule Shrekanography.Message.Encoder do
   end
 
   def encode_pixels(message_body, png_pixels) do
-    encode_pixels(message_body, png_pixels, [], [])
+    # Stash the length of the message into the first pixel
+    message_length = byte_size(message_body) |> :binary.encode_unsigned(:big)
+
+    encode_rows(message_length <> message_body, png_pixels, [])
   end
 
-  # Case: no more characters in the message, no more pixels, no WIP- all done!
-  defp encode_pixels(_remaining_message = <<>>,
-                     _remaining_rows = [],
-                     _working_row = [],
-                     finished_rows) do
+  defp encode_rows(_remaining_message = <<>>,
+                   _remaining_rows = [],
+                   finished_rows) do
     Enum.reverse(finished_rows)
   end
 
-  # Case: we haven't processed any message characters yet
-  defp encode_pixels(message_body,
-                     _remaining_pixels = [[first_pixel | remaining_row_pixels] | remaining_rows],
-                     _working_row = [],
-                     finished_rows = []) do
+  defp encode_rows(message,
+                   [current_row | remaining_rows],
+                   finished_rows) do
+    bytes_to_take = min(length(current_row), byte_size(message))
 
-    # encode the length of the message into the first pixel
-    # NOTE: length must fit in 1 unsigned byte, so the max message length is 255 bytes
-    message_length = byte_size(message_body)
+    <<current_message::binary-size(bytes_to_take), remaining_message::binary>> = message
 
-    encoded_pixel = encode_pixel(first_pixel, message_length)
-
-    encode_pixels(message_body,
-                  [remaining_row_pixels | remaining_rows],
-                  [encoded_pixel],
-                  finished_rows)
+    encoded_row = encode_row(current_message, current_row)
+    encode_rows(remaining_message, remaining_rows, [encoded_row | finished_rows])
   end
 
-  # Case: done encoding the current row
-  defp encode_pixels(remaining_message,
-                     _remaining_pixels = [[] | remaining_rows],
-                     working_row,
-                     finished_rows) do
-    # Add the working row on to the pile of finished rows and start the next row
-    encode_pixels(remaining_message, remaining_rows, [], [Enum.reverse(working_row) | finished_rows])
+  def encode_row(message, row) do
+    {pixels_to_encode, leftover_pixels} = Enum.split(row, byte_size(message))
+    message_as_list = :erlang.binary_to_list(message)
+
+    encoded_pixels = Enum.zip(pixels_to_encode, message_as_list) |> Enum.map(&encode_pixel/1)
+    encoded_pixels ++ leftover_pixels
   end
 
-  # Case: no more characters in the message, but some pixels left on the current row
-  defp encode_pixels(remaining_message = <<>>,
-                     _remaining_pixels = [remaining_row_pixels | remaining_rows],
-                     working_row,
-                     finished_rows) do
-    # Add the rest of the pixels on to the front of the working row
-    current_row = Enum.reverse(remaining_row_pixels) ++ working_row
-
-    encode_pixels(remaining_message, [[] | remaining_rows], current_row, finished_rows)
-  end
-
-  # General case: encode a message character into a pixel
-  defp encode_pixels(_message_body = <<message_byte::integer, remaining_message::binary>>,
-                     _remaining_pixels = [[pixel | remaining_row_pixels] | remaining_rows],
-                     working_row,
-                     finished_rows) do
-    encoded_pixel = encode_pixel(pixel, message_byte)
-
-    encode_pixels(remaining_message,
-                  [remaining_row_pixels | remaining_rows],
-                  [encoded_pixel | working_row],
-                  finished_rows)
-  end
-
-  defp encode_pixel({red, green, blue, alpha}, message_byte) do
+  defp encode_pixel({{red, green, blue, alpha}, message_byte}) do
     # Stash message data in the two least significant bits of each channel.
 
     # Split up the message byte into four two-bit chunks:
