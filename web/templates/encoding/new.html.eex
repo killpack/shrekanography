@@ -2,7 +2,7 @@
 <%= form_for @conn, encoding_path(@conn, :create), [as: :message], fn f -> %>
   <div class="form-group">
     <label>Message</label>
-    <%= textarea f, :body, class: "form-control", required: "required", maxlength: 255 %>
+    <%= textarea f, :body, class: "form-control", required: "required", maxlength: 65535 %>
   </div>
   <%= submit "Shrek me", class: "btn btn-primary" %>
 <% end %>

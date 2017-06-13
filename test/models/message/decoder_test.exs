@@ -8,7 +8,7 @@ defmodule Shrekanography.Message.Decoder.Test do
       Here's a pretty long message. Nice.
       It's got unicode characters, too. よし！
       Hooray for messages!
-      """
+      """ |> String.duplicate(50)
     encoded_pixels = Shrekanography.Message.Encoder.encode_pixels(message, png.pixels)
     decoded_message = Decoder.decode_pixels(encoded_pixels)
 

@@ -8,8 +8,8 @@ defmodule Shrekanography.Message.Decoder do
   end
 
   def decode_pixels(pixels) do
-    [first_pixel | remaining_pixels] = List.flatten(pixels)
-    message_length = decode_pixel(first_pixel)
+    {[first_pixel, second_pixel], remaining_pixels} = List.flatten(pixels) |> Enum.split(2)
+    message_length = <<decode_pixel(first_pixel), decode_pixel(second_pixel)>> |> :binary.decode_unsigned(:big)
 
     message_pixels = Enum.take(remaining_pixels, message_length)
 

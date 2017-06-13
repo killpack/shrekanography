@@ -11,13 +11,13 @@ defmodule Shrekanography.Message.Encoder do
   end
 
   def encode_pixels(message_body, png_pixels) do
-    # Stash the length of the message into the first pixel
+    # Stash the length of the message into the first two pixels
     message_length = byte_size(message_body)
-    full_message = [message_length | :erlang.binary_to_list(message_body)]
+    full_message = :erlang.binary_to_list(<<message_length::size(16), message_body::binary>>)
 
     row_length = length(hd(png_pixels))
 
-    {pixels_to_encode, leftover_pixels} = png_pixels |> List.flatten |> Enum.split(message_length + 1)
+    {pixels_to_encode, leftover_pixels} = png_pixels |> List.flatten |> Enum.split(message_length + 2) # to account for the two bytes that hold the length
 
     encoded_pixels = Enum.zip(pixels_to_encode, full_message) |> Enum.map(&encode_pixel/1)
 
